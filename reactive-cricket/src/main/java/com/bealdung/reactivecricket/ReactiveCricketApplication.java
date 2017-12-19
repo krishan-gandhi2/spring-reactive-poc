@@ -40,31 +40,31 @@ public class ReactiveCricketApplication {
     @Bean
     CommandLineRunner commandLineRunner() {
         return args -> {
-            createRandomStock();
+            createRandomPlayer();
         };
     }
 
     @RestController
     @RequestMapping("/player/records")
-    class StockTransactionController {
+    class PlayerRecordsController {
 
         @Autowired
-        StockTransactionService stockTransactionService;
+        PlayerRecordsService playerRecordsService;
 
         @GetMapping(produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-        public Flux<BatsmanRecord> stockTransactionEvents(){
-            return stockTransactionService.getStockTransactions();
+        public Flux<BatsmanRecord> PlayerRecordsEvents(){
+            return playerRecordsService.getPlayerRecordss();
         }
     }
 
     @Service
-    class StockTransactionService {
-        Flux<BatsmanRecord> getStockTransactions() {
+    class PlayerRecordsService {
+        Flux<BatsmanRecord> getPlayerRecordss() {
             Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
             interval.subscribe((i) -> playerList.forEach(player -> player.setCountry(changeCountry())));
 
-            Flux<BatsmanRecord> stockTransactionFlux = Flux.fromStream(Stream.generate(() -> new BatsmanRecord(getRandomRuns(), getRandomPlayer(), new Date())));
-            return Flux.zip(interval, stockTransactionFlux).map(Tuple2::getT2);
+            Flux<BatsmanRecord> playerRecordsFlux = Flux.fromStream(Stream.generate(() -> new BatsmanRecord(getRandomRuns(), getRandomPlayer(), new Date())));
+            return Flux.zip(interval, playerRecordsFlux).map(Tuple2::getT2);
         }
     }
 
@@ -138,7 +138,7 @@ public class ReactiveCricketApplication {
 		}
     }
 
-    void createRandomStock() {
+    void createRandomPlayer() {
     	playerNames.forEach(player -> {
             playerList.add(new Player(player, generateRandomCountry()));
         });
